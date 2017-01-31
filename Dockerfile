@@ -4,8 +4,14 @@ MAINTAINER Rafael Kallis <rk@rafaelkallis.com>
 
 # Node
 ENV NODE_VERSION 7.4.0
+ENV NGINX_VERSION 1.11.9
 
-RUN adduser -D -u 1000 node \
+
+RUN apk --no-cache add git \
+
+# Node
+
+	&& adduser -D -u 1000 node \
     && apk add --no-cache \
         libstdc++ \
     && apk add --no-cache --virtual .build-deps \
@@ -42,13 +48,11 @@ RUN adduser -D -u 1000 node \
     && apk del .build-deps \
     && cd .. \
     && rm -Rf "node-v$NODE_VERSION" \
-    && rm "node-v$NODE_VERSION.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt
-
+    && rm "node-v$NODE_VERSION.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
 
 # Nginx
-ENV NGINX_VERSION 1.11.9
 
-RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
+	&& GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
 		--sbin-path=/usr/sbin/nginx \
@@ -169,7 +173,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \ 
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
