@@ -3,7 +3,6 @@ FROM alpine
 MAINTAINER Rafael Kallis <rk@rafaelkallis.com>
 
 # Node
-ENV NPM_CONFIG_LOGLEVEL info
 ENV NODE_VERSION 7.4.0
 
 RUN adduser -D -u 1000 node \
